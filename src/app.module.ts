@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config'
-import { SentryModule } from '@sentry/nestjs/setup';;
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { SentryModule } from '@sentry/nestjs/setup';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from '@/config/typeorm.config';
 import { AnswerModule } from './answer/answer.module';
@@ -26,7 +26,7 @@ import configuration from '@/config/configuration';
     QuestionModule,
     TestGroupModule,
     TestSheetModule,
-    TestResultModule
+    TestResultModule,
   ],
 })
 export class AppModule {}

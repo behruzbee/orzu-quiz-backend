@@ -2,31 +2,26 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToMany,
   CreateDateColumn,
-  UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
-import { TestGroup } from '@/test-group/entities/test-group.entity';
+import { TestGroupEntity } from '@/test-group/entities/test-group.entity';
 
 @Entity()
-export class TestSheet {
+export class TestSheetEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  name: string; 
+  title: string;
 
-  @Column({ type: 'float', default: 0 })
-  score: number;
 
-  @OneToMany(() => TestGroup, (group) => group.sheet, {
-    cascade: true,
-  })
-  groups: TestGroup[];
+  @Column({ unique: true })
+  accessCode: string; // Код ссылки, например UUID или slug
 
   @CreateDateColumn()
   createdAt: Date;
 
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @OneToMany(() => TestGroupEntity, (group) => group.sheet)
+  groups: TestGroupEntity[];
 }

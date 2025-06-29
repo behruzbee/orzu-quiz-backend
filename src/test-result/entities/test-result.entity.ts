@@ -1,4 +1,3 @@
-import { TestSheet } from '@/test-sheet/entities/test-sheet.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -6,19 +5,30 @@ import {
   ManyToOne,
   CreateDateColumn,
 } from 'typeorm';
+import { TestSheetEntity } from '@/test-sheet/entities/test-sheet.entity';
+
+type AnswerStat = {
+  questionId: number;
+  selectedAnswerId: number;
+  isCorrect: boolean;
+  groupName: string;
+};
 
 @Entity()
 export class TestResult {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => TestSheet, {
+  @ManyToOne(() => TestSheetEntity, {
     onDelete: 'CASCADE',
   })
-  sheet: TestSheet;
+  sheet: TestSheetEntity;
 
   @Column()
   userName: string;
+
+  @Column()
+  department: string;
 
   @Column({ type: 'float' })
   score: number;
@@ -28,6 +38,9 @@ export class TestResult {
 
   @Column({ default: 0 })
   totalQuestions: number;
+
+  @Column('json')
+  answerStats: AnswerStat[];
 
   @CreateDateColumn()
   takenAt: Date;

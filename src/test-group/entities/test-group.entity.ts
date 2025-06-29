@@ -6,20 +6,20 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Question } from '@/question/entities/question.entity';
-import { TestSheet } from '@/test-sheet/entities/test-sheet.entity';
+import { TestSheetEntity } from '@/test-sheet/entities/test-sheet.entity';
 
 @Entity()
-export class TestGroup {
+export class TestGroupEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  name: string; // Например: "1С Саралаш", "2С Сарамжлаш"
+  name: string;
 
-  @ManyToOne(() => TestSheet, (sheet) => sheet.groups, {
+  @ManyToOne(() => TestSheetEntity, (sheet) => sheet.groups, {
     onDelete: 'CASCADE',
   })
-  sheet: TestSheet;
+  sheet: TestSheetEntity;
 
   @OneToMany(() => Question, (question) => question.group, {
     cascade: true,

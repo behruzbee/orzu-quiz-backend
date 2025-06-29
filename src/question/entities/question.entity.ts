@@ -6,7 +6,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Answer } from '@/answer/entities/answer.entity';
-import { TestGroup } from '@/test-group/entities/test-group.entity';
+import { TestGroupEntity } from '@/test-group/entities/test-group.entity';
 
 @Entity()
 export class Question {
@@ -16,10 +16,10 @@ export class Question {
   @Column()
   text: string;
 
-  @ManyToOne(() => TestGroup, (group) => group.questions, {
+  @ManyToOne(() => TestGroupEntity, (group) => group.questions, {
     onDelete: 'CASCADE',
   })
-  group: TestGroup;
+  group: TestGroupEntity;
 
   @OneToMany(() => Answer, (answer) => answer.question, {
     cascade: true,

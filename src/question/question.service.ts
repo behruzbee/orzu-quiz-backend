@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Question } from './entities/question.entity';
 import { Answer } from '@/answer/entities/answer.entity';
-import { TestGroup } from '@/test-group/entities/test-group.entity';
+import { TestGroupEntity } from '@/test-group/entities/test-group.entity';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question';
 
@@ -16,8 +16,8 @@ export class QuestionService {
     @InjectRepository(Answer)
     private readonly answerRepo: Repository<Answer>,
 
-    @InjectRepository(TestGroup)
-    private readonly groupRepo: Repository<TestGroup>,
+    @InjectRepository(TestGroupEntity)
+    private readonly groupRepo: Repository<TestGroupEntity>,
   ) {}
 
   async create(createDto: CreateQuestionDto): Promise<Question> {
@@ -25,12 +25,12 @@ export class QuestionService {
 
     const group = await this.groupRepo.findOne({ where: { id: groupId } });
     if (!group) {
-      throw new NotFoundException(`Group with ID ${groupId} not found`);
+      throw new NotFoundException(`Группа с ID ${groupId} не найдена`);
     }
 
     const correctCount = answers.filter(a => a.isCorrect).length;
     if (correctCount !== 1) {
-      throw new BadRequestException('Exactly one answer must be marked as correct');
+      throw new BadRequestException('Должен быть указан ровно один правильный ответ');
     }
 
     const question = this.questionRepo.create({
@@ -52,7 +52,10 @@ export class QuestionService {
       relations: ['answers', 'group'],
     });
 
-    if (!question) throw new NotFoundException(`Question ${id} not found`);
+    if (!question) {
+      throw new NotFoundException(`Вопрос с ID ${id} не найден`);
+    }
+
     return question;
   }
 
@@ -61,15 +64,15 @@ export class QuestionService {
 
     const correctCount = updateDto.answers.filter(a => a.isCorrect).length;
     if (correctCount !== 1) {
-      throw new BadRequestException('Exactly one answer must be marked as correct');
+      throw new BadRequestException('Должен быть указан ровно один правильный ответ');
     }
 
     question.text = updateDto.text;
 
-    // Удалить старые ответы
+    // Удаляем старые ответы
     await this.answerRepo.delete({ question: { id } });
 
-    // Добавить новые ответы
+    // Добавляем новые ответы
     question.answers = updateDto.answers.map(a => this.answerRepo.create(a));
 
     return this.questionRepo.save(question);
